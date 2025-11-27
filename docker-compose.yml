@@ -1,0 +1,153 @@
+version: '3.8'
+
+services:
+  # Redis - Message broker and cache
+  redis:
+    image: redis:7-alpine
+    container_name: crypto-monitor-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  # TimescaleDB - Time series database
+  timescaledb:
+    image: timescale/timescaledb:latest-pg15
+    container_name: crypto-monitor-timescaledb
+    environment:
+      POSTGRES_DB: crypto_monitor
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - timescaledb-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Ingestion Service
+  ingestion-service:
+    build:
+      context: .
+      dockerfile: ./services/ingestion-service/Dockerfile
+    container_name: crypto-monitor-ingestion
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      LOG_LEVEL: info
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      COINGECKO_API_URL: https://api.coingecko.com/api/v3
+      INGESTION_INTERVAL_MS: 10000
+      MONITORED_SYMBOLS: bitcoin,ethereum,cardano,solana,polkadot,avalanche-2,chainlink,polygon,uniswap,cosmos
+    restart: unless-stopped
+
+  # Analysis Service
+  analysis-service:
+    build:
+      context: .
+      dockerfile: ./services/analysis-service/Dockerfile
+    container_name: crypto-monitor-analysis
+    depends_on:
+      redis:
+        condition: service_healthy
+      timescaledb:
+        condition: service_healthy
+    ports:
+      - "3002:3002"
+    environment:
+      NODE_ENV: production
+      LOG_LEVEL: info
+      PORT: 3002
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      TIMESCALE_HOST: timescaledb
+      TIMESCALE_PORT: 5432
+      TIMESCALE_DATABASE: crypto_monitor
+      TIMESCALE_USER: postgres
+      TIMESCALE_PASSWORD: postgres
+    restart: unless-stopped
+
+  # Notification Service
+  notification-service:
+    build:
+      context: .
+      dockerfile: ./services/notification-service/Dockerfile
+    container_name: crypto-monitor-notification
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      LOG_LEVEL: info
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_SECURE: ${SMTP_SECURE}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      EMAIL_FROM: ${EMAIL_FROM}
+    restart: unless-stopped
+
+  # User Service
+  user-service:
+    build:
+      context: .
+      dockerfile: ./services/user-service/Dockerfile
+    container_name: crypto-monitor-user
+    depends_on:
+      timescaledb:
+        condition: service_healthy
+    ports:
+      - "3003:3003"
+    environment:
+      NODE_ENV: production
+      LOG_LEVEL: info
+      PORT: 3003
+      DB_HOST: timescaledb
+      DB_PORT: 5432
+      DB_NAME: crypto_monitor
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      JWT_SECRET: ${JWT_SECRET:-your-jwt-secret-change-in-production}
+      JWT_EXPIRES_IN: 7d
+    restart: unless-stopped
+
+  # Gateway Service (API + WebSocket)
+  gateway-service:
+    build:
+      context: .
+      dockerfile: ./services/gateway-service/Dockerfile
+    container_name: crypto-monitor-gateway
+    depends_on:
+      - redis
+      - analysis-service
+      - user-service
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      LOG_LEVEL: info
+      PORT: 3000
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      CORS_ORIGIN: http://localhost:5173
+      ANALYSIS_SERVICE_URL: http://analysis-service:3002
+      USER_SERVICE_URL: http://user-service:3003
+    restart: unless-stopped
+
+volumes:
+  redis-data:
+  timescaledb-data:

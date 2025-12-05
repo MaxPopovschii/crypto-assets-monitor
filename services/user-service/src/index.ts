@@ -32,7 +32,11 @@ async function main() {
 
   // Health check
   app.get('/health', (_req, res) => {
-    res.json({ status: 'healthy', service: 'user-service' });
+    res.json({ 
+      status: 'healthy', 
+      service: 'user-service',
+      timestamp: new Date()
+    });
   });
 
   // Routes

@@ -236,6 +236,12 @@ export interface DatabaseConfig {
   ssl?: boolean;
 }
 
+// Export error classes
+export * from './errors';
+
+// Export validation schemas
+export * from './validation';
+
 export interface RedisConfig {
   host: string;
   port: number;

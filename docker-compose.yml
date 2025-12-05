@@ -15,6 +15,7 @@ services:
       interval: 10s
       timeout: 3s
       retries: 3
+    restart: unless-stopped
 
   # TimescaleDB - Time series database
   timescaledb:
@@ -33,6 +34,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
 
   # Ingestion Service
   ingestion-service:

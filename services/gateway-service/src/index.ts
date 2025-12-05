@@ -3,11 +3,16 @@ import express from 'express';
 import { createServer } from 'http';
 import { WebSocketServer } from 'ws';
 import cors from 'cors';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import pinoHttp from 'pino-http';
 import { loadConfig } from './config';
 import { RedisSubscriber } from './redis.client';
 import { WebSocketManager } from './websocket.manager';
 import { logger } from './logger';
+import { errorHandler, asyncHandler } from './middleware/errorHandler';
+import { validateBody } from './middleware/validation';
+import { createAlertSchema, loginSchema, registerSchema } from '@crypto-monitor/types';
 
 // Load environment variables
 dotenv.config();
@@ -19,6 +24,17 @@ async function main() {
 
   // Create Express app
   const app = express();
+
+  // Security middleware
+  app.use(helmet());
+  
+  // Rate limiting
+  const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // limit each IP to 100 requests per windowMs
+    message: 'Too many requests from this IP, please try again later',
+  });
+  app.use('/api/', limiter);
   
   app.use(cors({ origin: config.corsOrigin }));
   app.use(express.json());
@@ -213,6 +229,9 @@ async function main() {
   await redisSubscriber.subscribeToAlertTriggered((alert) => {
     wsManager.sendAlertToUser(alert.alert.userId, alert);
   });
+
+  // Error handling middleware (must be last)
+  app.use(errorHandler);
 
   // Start server
   server.listen(config.port, () => {

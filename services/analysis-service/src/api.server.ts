@@ -21,7 +21,7 @@ export function createApiServer(
   app.use(pinoHttp({ logger }));
 
   // Health check
-  app.get('/health', (req: Request, res: Response) => {
+  app.get('/health', (_req: Request, res: Response) => {
     res.json({
       status: 'healthy',
       service: 'analysis-service',

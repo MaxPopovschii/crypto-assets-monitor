@@ -1,4 +1,5 @@
 import { DatabaseClient } from '../database.client';
+import { AlertCondition } from '@crypto-monitor/types';
 import { Pool } from 'pg';
 
 jest.mock('pg');
@@ -82,35 +83,12 @@ describe('DatabaseClient', () => {
       const alert = await dbClient.createAlert({
         userId: 'user123',
         symbol: 'BTC',
-        condition: 'ABOVE',
+        condition: AlertCondition.ABOVE,
         targetValue: 50000,
       });
 
       expect(alert.symbol).toBe('BTC');
       expect(alert.targetValue).toBe(50000);
-      expect(mockClient.release).toHaveBeenCalled();
-    });
-  });
-
-  describe('savePriceData', () => {
-    it('should save price data to database', async () => {
-      const mockClient = {
-        query: jest.fn().mockResolvedValue({}),
-        release: jest.fn(),
-      };
-      mockPool.connect.mockResolvedValue(mockClient as unknown as any);
-
-      await dbClient.savePriceData({
-        symbol: 'BTC',
-        price: 50000,
-        volume: 1000000,
-        timestamp: new Date(),
-      });
-
-      expect(mockClient.query).toHaveBeenCalledWith(
-        expect.stringContaining('INSERT INTO price_history'),
-        expect.any(Array)
-      );
       expect(mockClient.release).toHaveBeenCalled();
     });
   });

@@ -11,7 +11,7 @@ export function createAuthRoutes(db: UserDatabaseClient, jwtConfig: { secret: st
     try {
       const request: CreateUserRequest = req.body;
       const user = await db.createUser(request);
-      const token = jwt.sign({ userId: user.id }, jwtConfig.secret, { expiresIn: jwtConfig.expiresIn });
+      const token = jwt.sign({ userId: user.id } as object, jwtConfig.secret, { expiresIn: jwtConfig.expiresIn });
       
       res.status(201).json({ success: true, data: { user, token } });
     } catch (error: any) {
@@ -29,7 +29,7 @@ export function createAuthRoutes(db: UserDatabaseClient, jwtConfig: { secret: st
       }
 
       const { passwordHash, ...userWithoutPassword } = user;
-      const token = jwt.sign({ userId: user.id }, jwtConfig.secret, { expiresIn: jwtConfig.expiresIn });
+      const token = jwt.sign({ userId: user.id } as object, jwtConfig.secret, { expiresIn: jwtConfig.expiresIn });
       
       res.json({ success: true, data: { user: userWithoutPassword, token } });
     } catch (error: any) {

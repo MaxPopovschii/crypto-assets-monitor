@@ -57,7 +57,7 @@ export function createApiServer(
         timestamp: new Date()
       };
 
-      res.status(201).json(response);
+      return res.status(201).json(response);
     } catch (error) {
       logger.error({ error }, 'Failed to create alert');
       const response: ApiResponse<null> = {
@@ -68,7 +68,7 @@ export function createApiServer(
         },
         timestamp: new Date()
       };
-      res.status(500).json(response);
+      return res.status(500).json(response);
     }
   });
 
@@ -84,7 +84,7 @@ export function createApiServer(
         timestamp: new Date()
       };
 
-      res.json(response);
+      return res.json(response);
     } catch (error) {
       logger.error({ error }, 'Failed to get user alerts');
       const response: ApiResponse<null> = {
@@ -95,7 +95,7 @@ export function createApiServer(
         },
         timestamp: new Date()
       };
-      res.status(500).json(response);
+      return res.status(500).json(response);
     }
   });
 
@@ -112,7 +112,7 @@ export function createApiServer(
         timestamp: new Date()
       };
 
-      res.json(response);
+      return res.json(response);
     } catch (error) {
       logger.error({ error }, 'Failed to cancel alert');
       const response: ApiResponse<null> = {
@@ -123,7 +123,7 @@ export function createApiServer(
         },
         timestamp: new Date()
       };
-      res.status(500).json(response);
+      return res.status(500).json(response);
     }
   });
 
@@ -156,7 +156,7 @@ export function createApiServer(
         timestamp: new Date()
       };
 
-      res.json(response);
+      return res.json(response);
     } catch (error) {
       logger.error({ error }, 'Failed to get price history');
       const response: ApiResponse<null> = {
@@ -167,7 +167,7 @@ export function createApiServer(
         },
         timestamp: new Date()
       };
-      res.status(500).json(response);
+      return res.status(500).json(response);
     }
   });
 
@@ -193,7 +193,7 @@ export function createApiServer(
         timestamp: new Date()
       };
 
-      res.json(response);
+      return res.json(response);
     } catch (error) {
       logger.error({ error }, 'Failed to get OHLC data');
       const response: ApiResponse<null> = {
@@ -204,7 +204,7 @@ export function createApiServer(
         },
         timestamp: new Date()
       };
-      res.status(500).json(response);
+      return res.status(500).json(response);
     }
   });
 

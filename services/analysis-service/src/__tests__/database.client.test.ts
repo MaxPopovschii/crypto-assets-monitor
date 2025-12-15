@@ -34,10 +34,10 @@ describe('DatabaseClient', () => {
   describe('initialize', () => {
     it('should create tables and hypertables', async () => {
       const mockClient = {
-        query: jest.fn().mockResolvedValue({}),
+        query: jest.fn().mockResolvedValue({} as never),
         release: jest.fn(),
       };
-      mockPool.connect.mockResolvedValue(mockClient as unknown as any);
+      mockPool.connect.mockResolvedValue(mockClient as never);
 
       await dbClient.initialize();
 
@@ -55,7 +55,7 @@ describe('DatabaseClient', () => {
 
     it('should handle initialization errors', async () => {
       const error = new Error('Connection failed');
-      mockPool.connect.mockRejectedValue(error);
+      mockPool.connect.mockRejectedValue(error as never);
 
       await expect(dbClient.initialize()).rejects.toThrow('Connection failed');
     });
@@ -78,7 +78,7 @@ describe('DatabaseClient', () => {
         }),
         release: jest.fn(),
       };
-      mockPool.connect.mockResolvedValue(mockClient as unknown as any);
+      mockPool.connect.mockResolvedValue(mockClient as never);
 
       const alert = await dbClient.createAlert({
         userId: 'user123',

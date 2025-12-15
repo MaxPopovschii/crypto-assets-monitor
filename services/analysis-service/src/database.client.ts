@@ -265,7 +265,7 @@ export class DatabaseClient {
     const client = await this.pool.connect();
     try {
       const values = data
-        .map((item, i) => {
+        .map((_item, i) => {
           const base = i * 4;
           return `($${base + 1}, $${base + 2}, $${base + 3}, $${base + 4})`;
         })
@@ -354,15 +354,15 @@ export class DatabaseClient {
 
   private mapRowToAlert(row: Record<string, unknown>): Alert {
     return {
-      id: row.id,
-      userId: row.user_id,
-      symbol: row.symbol,
+      id: row.id as string,
+      userId: row.user_id as string,
+      symbol: row.symbol as string,
       condition: row.condition as AlertCondition,
-      targetValue: parseFloat(row.target_value),
+      targetValue: parseFloat(row.target_value as string),
       status: row.status as AlertStatus,
-      createdAt: row.created_at,
-      triggeredAt: row.triggered_at || undefined,
-      notificationSent: row.notification_sent
+      createdAt: row.created_at as Date,
+      triggeredAt: (row.triggered_at as Date | null) || undefined,
+      notificationSent: row.notification_sent as boolean
     };
   }
 

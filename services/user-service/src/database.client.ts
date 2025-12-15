@@ -229,26 +229,26 @@ export class UserDatabaseClient {
     await this.pool.end();
   }
 
-  private mapUserRow(row: any): User {
+  private mapUserRow(row: Record<string, unknown>): User {
     return {
-      id: row.id,
-      email: row.email,
-      nickname: row.nickname,
-      createdAt: row.created_at,
-      updatedAt: row.updated_at
+      id: row.id as string,
+      email: row.email as string,
+      nickname: row.nickname as string | undefined,
+      createdAt: row.created_at as Date,
+      updatedAt: row.updated_at as Date
     };
   }
 
-  private mapPortfolioRow(row: any): PortfolioItem {
+  private mapPortfolioRow(row: Record<string, unknown>): PortfolioItem {
     return {
-      id: row.id,
-      userId: row.user_id,
-      tokenSymbol: row.token_symbol,
-      amount: parseFloat(row.amount),
-      averageBuyPrice: row.average_buy_price ? parseFloat(row.average_buy_price) : undefined,
-      notes: row.notes,
-      createdAt: row.created_at,
-      updatedAt: row.updated_at
+      id: row.id as string,
+      userId: row.user_id as string,
+      tokenSymbol: row.token_symbol as string,
+      amount: parseFloat(row.amount as string),
+      averageBuyPrice: row.average_buy_price ? parseFloat(row.average_buy_price as string) : undefined,
+      notes: row.notes as string | undefined,
+      createdAt: row.created_at as Date,
+      updatedAt: row.updated_at as Date
     };
   }
 }

@@ -7,10 +7,8 @@ import { logger } from './logger';
 
 export class CoinGeckoClient {
   private client: AxiosInstance;
-  private apiKey?: string;
 
   constructor(baseURL: string, apiKey?: string) {
-    this.apiKey = apiKey;
     this.client = axios.create({
       baseURL,
       timeout: 10000,

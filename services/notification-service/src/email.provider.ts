@@ -21,7 +21,7 @@ export class EmailProvider {
     });
 
     // Verify connection
-    this.transporter.verify((error, success) => {
+    this.transporter.verify((error) => {
       if (error) {
         logger.error({ error }, 'Email provider connection failed');
       } else {

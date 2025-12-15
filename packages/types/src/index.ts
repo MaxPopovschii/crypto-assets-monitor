@@ -82,15 +82,6 @@ export interface AlertTriggered {
   triggeredAt: Date;
 }
 
-// User Types
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  notificationPreferences: NotificationPreferences;
-  createdAt: Date;
-}
-
 export interface NotificationPreferences {
   email: boolean;
   push: boolean;

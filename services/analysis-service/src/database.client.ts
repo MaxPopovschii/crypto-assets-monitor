@@ -1,4 +1,4 @@
-import { Pool, PoolClient } from 'pg';
+import { Pool } from 'pg';
 import {
   DatabaseConfig,
   Alert,
@@ -8,6 +8,7 @@ import {
   AssetPriceTimeSeries
 } from '@crypto-monitor/types';
 import { logger } from './logger';
+import { v4 as uuidv4 } from 'uuid';
 
 export class DatabaseClient {
   private pool: Pool;
@@ -166,7 +167,7 @@ export class DatabaseClient {
   async createAlert(request: CreateAlertRequest): Promise<Alert> {
     const client = await this.pool.connect();
     try {
-      const id = require('uuid').v4();
+      const id = uuidv4();
       const result = await client.query(
         `INSERT INTO alerts (id, user_id, symbol, condition, target_value, status)
          VALUES ($1, $2, $3, $4, $5, $6)
@@ -324,7 +325,7 @@ export class DatabaseClient {
     timeframe: string,
     startTime: Date,
     endTime: Date
-  ): Promise<any[]> {
+  ): Promise<unknown[]> {
     const client = await this.pool.connect();
     try {
       const result = await client.query(
@@ -351,7 +352,7 @@ export class DatabaseClient {
     }
   }
 
-  private mapRowToAlert(row: any): Alert {
+  private mapRowToAlert(row: Record<string, unknown>): Alert {
     return {
       id: row.id,
       userId: row.user_id,

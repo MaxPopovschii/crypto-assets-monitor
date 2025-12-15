@@ -13,7 +13,7 @@ describe('DatabaseClient', () => {
       query: jest.fn(),
       on: jest.fn(),
       end: jest.fn(),
-    } as any;
+    } as unknown as jest.Mocked<Pool>;
 
     (Pool as jest.MockedClass<typeof Pool>).mockImplementation(() => mockPool);
 
@@ -36,7 +36,7 @@ describe('DatabaseClient', () => {
         query: jest.fn().mockResolvedValue({}),
         release: jest.fn(),
       };
-      mockPool.connect.mockResolvedValue(mockClient as any);
+      mockPool.connect.mockResolvedValue(mockClient as unknown as any);
 
       await dbClient.initialize();
 
@@ -77,7 +77,7 @@ describe('DatabaseClient', () => {
         }),
         release: jest.fn(),
       };
-      mockPool.connect.mockResolvedValue(mockClient as any);
+      mockPool.connect.mockResolvedValue(mockClient as unknown as any);
 
       const alert = await dbClient.createAlert({
         userId: 'user123',
@@ -98,7 +98,7 @@ describe('DatabaseClient', () => {
         query: jest.fn().mockResolvedValue({}),
         release: jest.fn(),
       };
-      mockPool.connect.mockResolvedValue(mockClient as any);
+      mockPool.connect.mockResolvedValue(mockClient as unknown as any);
 
       await dbClient.savePriceData({
         symbol: 'BTC',

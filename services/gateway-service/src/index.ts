@@ -10,9 +10,7 @@ import { loadConfig } from './config';
 import { RedisSubscriber } from './redis.client';
 import { WebSocketManager } from './websocket.manager';
 import { logger } from './logger';
-import { errorHandler, asyncHandler } from './middleware/errorHandler';
-import { validateBody } from './middleware/validation';
-import { createAlertSchema, loginSchema, registerSchema } from '@crypto-monitor/types';
+import { errorHandler } from './middleware/errorHandler';
 
 // Load environment variables
 dotenv.config();

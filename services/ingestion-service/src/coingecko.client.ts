@@ -1,9 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 import {
   AssetPrice,
-  CoinGeckoPrice,
-  RedisChannel,
-  RedisPriceUpdate
+  CoinGeckoPrice
 } from '@crypto-monitor/types';
 import { logger } from './logger';
 

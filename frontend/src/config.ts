@@ -17,7 +17,8 @@ export function getWebSocketUrl(): string {
 // Get the API base URL
 export function getApiBaseUrl(): string {
   // In Codespaces or production, use relative URLs which will be proxied by Vite
-  if (import.meta.env.VITE_CODESPACE_NAME || window.location.hostname !== 'localhost') {
+  const isCodespace = typeof import.meta !== 'undefined' && import.meta.env?.VITE_CODESPACE_NAME;
+  if (isCodespace || window.location.hostname !== 'localhost') {
     return '/api';
   }
   

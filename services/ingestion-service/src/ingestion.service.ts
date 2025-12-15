@@ -107,9 +107,10 @@ export class IngestionService {
         { assetCount: assets.length, durationMs: duration },
         'Price ingestion completed'
       );
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Handle rate limiting with exponential backoff
-      if (error?.response?.status === 429 || error?.status === 429) {
+      const err = error as { response?: { status?: number }; status?: number };
+      if (err?.response?.status === 429 || err?.status === 429) {
         this.retryCount++;
         const delay = Math.min(
           this.baseRetryDelayMs * Math.pow(2, this.retryCount - 1),

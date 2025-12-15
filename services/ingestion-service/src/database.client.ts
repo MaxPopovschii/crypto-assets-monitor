@@ -1,5 +1,5 @@
-import { Pool, PoolClient } from 'pg';
-import { AssetPrice, OHLCData } from '@crypto-monitor/types';
+import { Pool } from 'pg';
+import { AssetPrice } from '@crypto-monitor/types';
 import { logger } from './logger';
 
 export class IngestionDatabaseClient {
@@ -31,7 +31,7 @@ export class IngestionDatabaseClient {
   async savePriceHistory(assets: AssetPrice[]): Promise<void> {
     const client = await this.pool.connect();
     try {
-      const values: any[] = [];
+      const values: (string | number | Date)[] = [];
       const placeholders: string[] = [];
       let paramIndex = 1;
 

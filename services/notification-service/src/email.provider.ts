@@ -1,5 +1,4 @@
 import nodemailer, { Transporter } from 'nodemailer';
-import { NotificationType, SendNotificationRequest } from '@crypto-monitor/types';
 import { EmailConfig } from './config';
 import { logger } from './logger';
 

@@ -29,9 +29,9 @@ COPY --from=builder /app/packages/types/dist ./packages/types/dist
 COPY --from=builder /app/packages/types/package.json ./packages/types/
 COPY --from=builder /app/services/notification-service/dist ./services/notification-service/dist
 COPY --from=builder /app/services/notification-service/package.json ./services/notification-service/
+COPY --from=builder /app/node_modules ./node_modules
 
-# Install production dependencies only
+# Set working directory
 WORKDIR /app/services/notification-service
-RUN npm install --production
 
 CMD ["node", "dist/index.js"]

@@ -36,9 +36,7 @@ COPY --from=builder /app/packages/types/dist ./packages/types/dist
 COPY --from=builder /app/packages/types/package.json ./packages/types/
 COPY --from=builder /app/services/user-service/dist ./services/user-service/dist
 COPY --from=builder /app/services/user-service/package.json ./services/user-service/
-
-# Install production dependencies only
-RUN npm install --production
+COPY --from=builder /app/node_modules ./node_modules
 
 # Set working directory to service
 WORKDIR /app/services/user-service

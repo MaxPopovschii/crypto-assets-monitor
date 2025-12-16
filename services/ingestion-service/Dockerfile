@@ -32,10 +32,10 @@ COPY --from=builder --chown=nodejs:nodejs /app/packages/types/dist ./packages/ty
 COPY --from=builder --chown=nodejs:nodejs /app/packages/types/package.json ./packages/types/
 COPY --from=builder --chown=nodejs:nodejs /app/services/ingestion-service/dist ./services/ingestion-service/dist
 COPY --from=builder --chown=nodejs:nodejs /app/services/ingestion-service/package.json ./services/ingestion-service/
+COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
 
-# Install production dependencies only
+# Set working directory
 WORKDIR /app/services/ingestion-service
-RUN npm ci --only=production && npm cache clean --force
 
 # Switch to non-root user
 USER nodejs

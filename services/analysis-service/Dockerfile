@@ -32,10 +32,10 @@ COPY --from=builder --chown=nodejs:nodejs /app/packages/types/dist ./packages/ty
 COPY --from=builder --chown=nodejs:nodejs /app/packages/types/package.json ./packages/types/
 COPY --from=builder --chown=nodejs:nodejs /app/services/analysis-service/dist ./services/analysis-service/dist
 COPY --from=builder --chown=nodejs:nodejs /app/services/analysis-service/package.json ./services/analysis-service/
+COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
 
-# Install production dependencies only
+# Set working directory
 WORKDIR /app/services/analysis-service
-RUN npm ci --only=production && npm cache clean --force
 
 # Switch to non-root user
 USER nodejs

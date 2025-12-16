@@ -32,10 +32,10 @@ COPY --from=builder --chown=nodejs:nodejs /app/packages/types/dist ./packages/ty
 COPY --from=builder --chown=nodejs:nodejs /app/packages/types/package.json ./packages/types/
 COPY --from=builder --chown=nodejs:nodejs /app/services/gateway-service/dist ./services/gateway-service/dist
 COPY --from=builder --chown=nodejs:nodejs /app/services/gateway-service/package.json ./services/gateway-service/
+COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
 
-# Install production dependencies only
+# Set working directory
 WORKDIR /app/services/gateway-service
-RUN npm ci --only=production && npm cache clean --force
 
 # Switch to non-root user
 USER nodejs

@@ -9,7 +9,7 @@ COPY packages/types/package.json ./packages/types/
 COPY services/gateway-service/package.json ./services/gateway-service/
 
 # Install dependencies (cached if package.json unchanged)
-RUN npm ci --only=production=false
+RUN npm install
 
 # Copy source code
 COPY packages/types ./packages/types

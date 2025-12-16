@@ -9,7 +9,7 @@ COPY packages/types/package.json ./packages/types/
 COPY services/analysis-service/package.json ./services/analysis-service/
 
 # Install dependencies
-RUN npm ci --only=production=false
+RUN npm install
 
 # Copy source code
 COPY packages/types ./packages/types

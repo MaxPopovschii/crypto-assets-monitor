@@ -1,5 +1,5 @@
 # Build stage
-FROM node:18-alpine AS builder
+FROM node:25.8.2-alpine AS builder
 
 WORKDIR /app
 
@@ -20,7 +20,7 @@ COPY tsconfig.base.json ./
 RUN npm run build --filter=@crypto-monitor/analysis-service
 
 # Production stage
-FROM node:18-alpine
+FROM node:25.8.2-alpine
 
 # Add non-root user
 RUN addgroup -g 1001 -S nodejs && adduser -S nodejs -u 1001

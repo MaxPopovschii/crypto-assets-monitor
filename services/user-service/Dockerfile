@@ -1,5 +1,5 @@
 # Build stage
-FROM node:18-alpine AS builder
+FROM node:25.8.2-alpine AS builder
 
 WORKDIR /app
 
@@ -24,7 +24,7 @@ RUN cd packages/types && npm run build
 RUN cd services/user-service && npm run build
 
 # Production stage
-FROM node:18-alpine
+FROM node:25.8.2-alpine
 
 WORKDIR /app
 
